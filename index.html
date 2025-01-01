@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year 2025</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle, #0f2027, #203a43, #2c5364);
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+        h1 {
+            margin-top: 50px;
+            font-size: 3.5rem;
+            text-shadow: 0 0 20px #ffcc00;
+            animation: glow 2s infinite alternate;
+        }
+        .countdown {
+            font-size: 2rem;
+            margin: 20px 0;
+            text-shadow: 0 0 10px #00ffcc;
+        }
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00;
+            }
+            100% {
+                text-shadow: 0 0 20px #ffcc00, 0 0 30px #ffcc00;
+            }
+        }
+        #fireworks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .music-player {
+            margin: 20px;
+        }
+        .developer-info {
+            margin: 30px 0;
+            text-shadow: 0 0 10px #ff6699;
+        }
+        .developer-info img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 10px;
+            border: 4px solid white;
+            box-shadow: 0 0 15px #ff6699;
+        }
+        .developer-info p {
+            font-size: 1.5rem;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background: linear-gradient(45deg, #ff4500, #ff6347);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: scale(1.1);
+            background: linear-gradient(45deg, #ff6347, #ff4500);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .countdown {
+                font-size: 1.5rem;
+            }
+            .developer-info p {
+                font-size: 1.2rem;
+            }
+            .developer-info img {
+                width: 120px;
+                height: 120px;
+            }
+            button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+                margin-top: 30px;
+            }
+            .countdown {
+                font-size: 1.2rem;
+            }
+            .developer-info p {
+                font-size: 1rem;
+            }
+            .developer-info img {
+                width: 100px;
+                height: 100px;
+            }
+            button {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fireworks"></canvas>
+    <h1>🎉 Happy New Year 2025! 🎉</h1>
+    <div class="countdown" id="countdown"></div>
+    <div class="music-player">
+        <button id="toggle-music">Pause Music</button>
+    </div>
+
+    <div class="developer-info">
+        <img src="shuaibu.png" alt="Ibrahim Shuaibu Isa">
+        <p>Developed by Ibrahim Shuaibu Isa</p>
+    </div>
+
+    <audio id="bg-music" loop autoplay>
+        <source src="alan_walker_faded.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Countdown Timer
+        const countdownElement = document.getElementById('countdown');
+        const newYear = new Date(2025, 0, 1);
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = newYear - now;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000)) / 1000);
+
+            countdownElement.textContent = `Time until New Year: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        setInterval(updateCountdown, 1000);
+
+        // Fireworks Animation
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const fireworks = [];
+
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        class Firework {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.particles = [];
+                for (let i = 0; i < 100; i++) {
+                    this.particles.push({
+                        x: x,
+                        y: y,
+                        vx: random(-3, 3),
+                        vy: random(-3, 3),
+                        alpha: 1
+                    });
+                }
+            }
+
+            draw() {
+                this.particles.forEach(p => {
+                    ctx.fillStyle = `rgba(${this.color},${p.alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+
+            update() {
+                this.particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.alpha -= 0.01;
+                });
+                this.particles = this.particles.filter(p => p.alpha > 0);
+            }
+        }
+
+        function animateFireworks() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (Math.random() < 0.05) {
+                fireworks.push(new Firework(random(0, canvas.width), random(0, canvas.height), `${Math.floor(random(100, 255))}, ${Math.floor(random(100, 255))}, ${Math.floor(random(100, 255))}`));
+            }
+            fireworks.forEach((fw, index) => {
+                fw.draw();
+                fw.update();
+                if (fw.particles.length === 0) fireworks.splice(index, 1);
+            });
+            requestAnimationFrame(animateFireworks);
+        }
+
+        animateFireworks();
+
+        // Music Player
+        const bgMusic = document.getElementById('bg-music');
+        const toggleMusicButton = document.getElementById('toggle-music');
+        let isPlaying = true;
+
+        window.addEventListener('load', () => {
+            bgMusic.muted = false;
+            bgMusic.play().catch(error => {
+                console.error('Autoplay was prevented:', error);
+            });
+        });
+
+        toggleMusicButton.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                toggleMusicButton.textContent = 'Play Music';
+            } else {
+                bgMusic.play();
+                toggleMusicButton.textContent = 'Pause Music';
+            }
+            isPlaying = !isPlaying;
+        });
+    </script>
+</body>
+</html>
